@@ -14,60 +14,60 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("pessoas")
 public class PessoasController {
 
-    PessoaDAO dao;
+  PessoaDAO dao;
 
-    public PessoasController(){
-        dao = new PessoaDAO();
-    }
+  public PessoasController(){
+    dao = new PessoaDAO();
+  }
 
-    /**
-     * @param pessoa necessário devido utilizar no form.html o th:object que faz referência ao objeto esperado no controller.
-     * @return
-     */
-    @GetMapping("/form")
-    public String form(Pessoa pessoa){
-        return "/pessoas/form";
-    }
+  /**
+   * @param pessoa necessário devido utilizar no form.html o th:object que faz referência ao objeto esperado no controller.
+   * @return
+   */
+  @GetMapping("/form")
+  public String form(Pessoa pessoa){
+    return "/pessoas/form";
+  }
 
-    @GetMapping("/list")
-    public ModelAndView listar(ModelMap model) {
-        model.addAttribute("pessoas", dao.buscarPessoas());
-        return new ModelAndView("/pessoas/list", model);
-    }
+  @GetMapping("/list")
+  public ModelAndView listar(ModelMap model) {
+    model.addAttribute("pessoas", dao.buscarPessoas());
+    return new ModelAndView("/pessoas/list", model);
+  }
 
-    @PostMapping("/save")
-    public ModelAndView save(Pessoa pessoa){
-        System.out.println(pessoa);
-        dao.save(pessoa);
-        return new ModelAndView("redirect:/pessoas/list");
-    }
+  @PostMapping("/save")
+  public ModelAndView save(Pessoa pessoa){
+    System.out.println(pessoa);
+    dao.save(pessoa);
+    return new ModelAndView("redirect:/pessoas/list");
+  }
 
-    /**
-     * @param id
-     * @return
-     * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-     */
-    @GetMapping("/remove/{id}")
-    public ModelAndView remove(@PathVariable("id") Long id){
-        dao.remove(id);
-        return new ModelAndView("redirect:/pessoas/list");
-    }
+  /**
+   * @param id
+   * @return
+   * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
+   */
+  @GetMapping("/remove/{id}")
+  public ModelAndView remove(@PathVariable("id") Long id){
+    dao.remove(id);
+    return new ModelAndView("redirect:/pessoas/list");
+  }
 
-    /**
-     * @param id
-     * @return
-     * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-     */
-    @GetMapping("/edit/{id}")
-    public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
-        model.addAttribute("pessoa", dao.buscarPessoa(id));
-        return new ModelAndView("/pessoas/form", model);
-    }
+  /**
+   * @param id
+   * @return
+   * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
+   */
+  @GetMapping("/edit/{id}")
+  public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
+    model.addAttribute("pessoa", dao.buscarPessoa(id));
+    return new ModelAndView("/pessoas/form", model);
+  }
 
-    @PostMapping("/update")
-    public ModelAndView update(Pessoa pessoa) {
-        dao.update(pessoa);
-        return new ModelAndView("redirect:/pessoas/list");
-    }
+  @PostMapping("/update")
+  public ModelAndView update(Pessoa pessoa) {
+    dao.update(pessoa);
+    return new ModelAndView("redirect:/pessoas/list");
+  }
 
 }
