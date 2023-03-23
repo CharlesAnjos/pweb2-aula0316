@@ -1,7 +1,6 @@
 package edu.ifto.pweb2.aula0316.model.entity;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
 @Entity
