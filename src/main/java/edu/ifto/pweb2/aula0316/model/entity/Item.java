@@ -1,16 +1,19 @@
 package edu.ifto.pweb2.aula0316.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Item {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   private Long id;
+
+  @OneToOne
+  @JoinColumn(name = "id_produto")
   private Produto produto;
+  @ManyToOne
+  @JoinColumn(name = "id_venda")
+  private Venda venda;
   private Double quantidade;
 
   public Long getId() {
@@ -35,6 +38,14 @@ public class Item {
 
   public void setQuantidade(Double quantidade) {
     this.quantidade = quantidade;
+  }
+
+  public Venda getVenda() {
+    return venda;
+  }
+
+  public void setVenda(Venda venda) {
+    this.venda = venda;
   }
 
   public double total() {

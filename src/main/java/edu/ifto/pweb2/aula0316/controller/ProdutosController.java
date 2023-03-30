@@ -74,5 +74,4 @@ public class ProdutosController {
         repository.update(produto);
         return new ModelAndView("redirect:/produtos/list");
     }
-
 }
