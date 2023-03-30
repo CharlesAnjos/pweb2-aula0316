@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="item-venda")
 public class ItemVenda implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
