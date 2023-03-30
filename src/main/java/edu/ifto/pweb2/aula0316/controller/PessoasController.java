@@ -1,7 +1,9 @@
 package edu.ifto.pweb2.aula0316.controller;
 
-import edu.ifto.pweb2.aula0316.model.DAO.PessoaDAO;
 import edu.ifto.pweb2.aula0316.model.entity.Pessoa;
+import edu.ifto.pweb2.aula0316.model.repository.PessoaRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+@Transactional
 @Controller
 @RequestMapping("pessoas")
 public class PessoasController {
 
-  PessoaDAO dao;
+  @Autowired
+  PessoaRepository repository;
 
   public PessoasController(){
-    dao = new PessoaDAO();
+    repository = new PessoaRepository();
   }
 
   /**
@@ -31,14 +35,14 @@ public class PessoasController {
 
   @GetMapping("/list")
   public ModelAndView listar(ModelMap model) {
-    model.addAttribute("pessoas", dao.buscarPessoas());
+    model.addAttribute("pessoas", repository.pessoas());
     return new ModelAndView("/pessoas/list", model);
   }
 
   @PostMapping("/save")
   public ModelAndView save(Pessoa pessoa){
     System.out.println(pessoa);
-    dao.save(pessoa);
+    repository.save(pessoa);
     return new ModelAndView("redirect:/pessoas/list");
   }
 
@@ -49,7 +53,7 @@ public class PessoasController {
    */
   @GetMapping("/remove/{id}")
   public ModelAndView remove(@PathVariable("id") Long id){
-    dao.remove(id);
+    repository.remove(id);
     return new ModelAndView("redirect:/pessoas/list");
   }
 
@@ -60,13 +64,14 @@ public class PessoasController {
    */
   @GetMapping("/edit/{id}")
   public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
-    model.addAttribute("pessoa", dao.buscarPessoa(id));
+    var pessoa = repository.pessoa(id);
+    model.addAttribute("pessoa", pessoa);
     return new ModelAndView("/pessoas/form", model);
   }
 
   @PostMapping("/update")
   public ModelAndView update(Pessoa pessoa) {
-    dao.update(pessoa);
+    repository.update(pessoa);
     return new ModelAndView("redirect:/pessoas/list");
   }
 

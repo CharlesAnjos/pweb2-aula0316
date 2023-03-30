@@ -6,18 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<h1>PESSOAS</h1>
+<a href="/pessoas/form">Adicionar Nova Pessoa</a>
+
 <table class="table" border="1">
     <thead>
     <tr>
         <th>Id</th>
-        <th>Descrição</th>
+        <th>Nome</th>
     </tr>
     </thead>
     <tr th:each="p : ${pessoas}">
         <td th:text="${p.id}"> </td>
         <td th:text="${p.nome}"> </td>
-        <td> <a th:href="@{/pessoas/edit/{id}(id=${p.id})}">Editar</a> </td>
-        <td> <a onclick="return window.confirm('Tem certeza que deseja excluir este registro?')"  th:href="@{/pessoas/remove/{id}(id=${p.id})}">Excluir</a> </td>
+        <td> <a th:href="@{/pessoas/edit/{id}(id=${p.id})}">&#128221;</a> </td>
+        <td> <a onclick="return window.confirm('Tem certeza que deseja excluir este registro?')"  th:href="@{/pessoas/remove/{id}(id=${p.id})}">&#10060;</a> </td>
     </tr>
 </table>
 
