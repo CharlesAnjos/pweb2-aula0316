@@ -10,6 +10,7 @@ public class Produto implements Serializable{
     @Id
     private Long id;
     private String descricao;
+    private Long valor;
 
     public Long getId() {
         return id;
@@ -25,5 +26,13 @@ public class Produto implements Serializable{
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Long getValor() {
+        return valor;
+    }
+
+    public void setValor(Long valor) {
+        this.valor = valor;
     }
 }

@@ -14,13 +14,16 @@
     <tr>
         <th>Id</th>
         <th>Descrição</th>
+        <th>Valor</th>
+        <th colspan="2">Operaçoes</th>
     </tr>
     </thead>
     <tr th:each="p : ${produtos}">
         <td th:text="${p.id}"> </td>
         <td th:text="${p.descricao}"> </td>
-        <td> <a th:href="@{/produtos/edit/{id}(id=${p.id})}">Editar</a> </td>
-        <td> <a onclick="return window.confirm('Tem certeza que deseja excluir este produto?')"  th:href="@{/produtos/remove/{id}(id=${p.id})}">Excluir Produto</a> </td>
+        <td th:text="${p.valor}"> </td>
+        <td> <a th:href="@{/produtos/edit/{id}(id=${p.id})}">&#128221;</a> </td>
+        <td> <a onclick="return window.confirm('Tem certeza que deseja excluir este produto?')"  th:href="@{/produtos/remove/{id}(id=${p.id})}">&#10060;</a> </td>
     </tr>
 </table>
 
