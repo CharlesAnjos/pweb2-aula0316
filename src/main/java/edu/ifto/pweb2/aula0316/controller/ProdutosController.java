@@ -34,9 +34,15 @@ public class ProdutosController {
     }
 
     @GetMapping("/list")
-    public ModelAndView listar(ModelMap model) {
+    public ModelAndView list(ModelMap model) {
         model.addAttribute("produtos", repository.produtos());
         return new ModelAndView("/produtos/list", model);
+    }
+
+    @GetMapping("/loja")
+    public ModelAndView loja(ModelMap model) {
+        model.addAttribute("produtos", repository.produtos());
+        return new ModelAndView("/produtos/loja", model);
     }
 
     @PostMapping("/save")
