@@ -2,6 +2,7 @@ package edu.ifto.pweb2.aula0316.controller;
 
 import edu.ifto.pweb2.aula0316.model.entity.Produto;
 import edu.ifto.pweb2.aula0316.model.repository.ProdutoRepository;
+import edu.ifto.pweb2.aula0316.model.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class ProdutosController {
 
     @Autowired
-    ProdutoRepository repository;
+    ProdutoRepository produtoRepository;
+    @Autowired
+    ItemRepository itemRepository;
 
     public ProdutosController(){
-        repository = new ProdutoRepository();
+        produtoRepository = new ProdutoRepository();
     }
 
     /**
@@ -34,15 +37,21 @@ public class ProdutosController {
     }
 
     @GetMapping("/list")
-    public ModelAndView listar(ModelMap model) {
-        model.addAttribute("produtos", repository.produtos());
+    public ModelAndView list(ModelMap model) {
+        model.addAttribute("produtos", produtoRepository.produtos());
         return new ModelAndView("/produtos/list", model);
+    }
+
+    @GetMapping("/loja")
+    public ModelAndView loja(ModelMap model) {
+        model.addAttribute("produtos", produtoRepository.produtos());
+        return new ModelAndView("/produtos/loja", model);
     }
 
     @PostMapping("/save")
     public ModelAndView save(Produto produto){
         System.out.println(produto);
-        repository.save(produto);
+        produtoRepository.save(produto);
         return new ModelAndView("redirect:/produtos/list");
     }
 
@@ -53,7 +62,7 @@ public class ProdutosController {
      */
     @GetMapping("/remove/{id}")
     public ModelAndView remove(@PathVariable("id") Long id){
-        repository.remove(id);
+        produtoRepository.remove(id);
         return new ModelAndView("redirect:/produtos/list");
     }
 
@@ -64,15 +73,14 @@ public class ProdutosController {
      */
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
-        var produto = repository.produto(id);
+        var produto = produtoRepository.produto(id);
         model.addAttribute("produto", produto);
         return new ModelAndView("/produtos/form", model);
     }
 
     @PostMapping("/update")
     public ModelAndView update(Produto produto) {
-        repository.update(produto);
+        produtoRepository.update(produto);
         return new ModelAndView("redirect:/produtos/list");
     }
-
 }
