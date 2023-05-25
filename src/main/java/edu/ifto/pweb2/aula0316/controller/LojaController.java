@@ -1,13 +1,11 @@
 package edu.ifto.pweb2.aula0316.controller;
 
-import edu.ifto.pweb2.aula0316.model.entity.Item;
-import edu.ifto.pweb2.aula0316.model.entity.Produto;
-import edu.ifto.pweb2.aula0316.model.entity.Venda;
-import edu.ifto.pweb2.aula0316.model.repository.ItemRepository;
-import edu.ifto.pweb2.aula0316.model.repository.ProdutoRepository;
-import edu.ifto.pweb2.aula0316.model.repository.VendaRepository;
+import edu.ifto.pweb2.aula0316.model.entity.*;
+import edu.ifto.pweb2.aula0316.model.repository.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-@Transactional
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("loja")
+@Scope("request")
 public class LojaController {
 
     @Autowired
@@ -27,51 +29,58 @@ public class LojaController {
     ItemRepository itemRepository;
     @Autowired
     VendaRepository vendaRepository;
+    @Autowired
+    PessoaFisicaRepository pessoaFisicaRepository;
+    @Autowired
+    PessoaJuridicaRepository pessoaJuridicaRepository;
+    @Autowired
+    Venda venda;
 
     public LojaController(){
         produtoRepository = new ProdutoRepository();
         itemRepository = new ItemRepository();
         vendaRepository = new VendaRepository();
+        pessoaFisicaRepository = new PessoaFisicaRepository();
+        pessoaJuridicaRepository = new PessoaJuridicaRepository();
     }
-    @GetMapping("/loja")
-    public ModelAndView loja(ModelMap model) {
+    @GetMapping("/list")
+    public ModelAndView loja(Item item, ModelMap model) {
         model.addAttribute("produtos", produtoRepository.produtos());
-        return new ModelAndView("/loja/loja", model);
+        return new ModelAndView("/loja/list", model);
     }
 
-    @PostMapping("/saveItem")
-    public ModelAndView save(Item item){
-        System.out.println(item);
-        itemRepository.save(item);
-        return new ModelAndView("redirect:/loja/loja");
+    @PostMapping("/save")
+    public ModelAndView save(Item item) {
+        Produto p = produtoRepository.produto(item.getProduto().getId());
+        item.setProduto(p);
+        if(item.getQuantidade() > 0 || item.getQuantidade() != null) {
+            List<Item> itemsVenda;
+            if(venda.getItems() == null) {
+                itemsVenda = new ArrayList<>();
+                venda.setItems(itemsVenda);
+            } else {
+                itemsVenda = venda.getItems();
+            }
+            itemsVenda.add(item);
+            item.setVenda(venda);
+        }
+        return new ModelAndView("redirect:/loja/list");
     }
 
-    /**
-     * @param id
-     * @return
-     * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-     */
-    @GetMapping("/remove/{id}")
-    public ModelAndView remove(@PathVariable("id") Long id){
-        produtoRepository.remove(id);
-        return new ModelAndView("redirect:/produtos/list");
+    @GetMapping("/removeitem/{index}")
+    public ModelAndView removeitem(@PathVariable("index") int index){
+        venda.getItems().remove(index);
+        return new ModelAndView("redirect:/loja/list");
     }
 
-    /**
-     * @param id
-     * @return
-     * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-     */
-    @GetMapping("/venda/{id}")
-    public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
-        var venda = vendaRepository.venda(id);
-        model.addAttribute("venda", venda);
-        return new ModelAndView("/loja/venda", model);
-    }
-
-    @PostMapping("/update")
-    public ModelAndView update(Produto produto) {
-        produtoRepository.update(produto);
-        return new ModelAndView("redirect:/produtos/list");
+    @Transactional
+    @GetMapping("/finalizar")
+    public ModelAndView finalizar(HttpSession session) {
+        PessoaFisica pessoaFisica = pessoaFisicaRepository.pessoaFisica(1L);
+        venda.setData(LocalDateTime.now());
+        venda.setPessoa(pessoaFisica);
+        vendaRepository.save(venda);
+        session.invalidate();
+        return new ModelAndView("redirect:/vendas/list");
     }
 }

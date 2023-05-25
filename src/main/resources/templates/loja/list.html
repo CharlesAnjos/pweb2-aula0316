@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>LOJA</title>
     <meta charset="UTF-8">
@@ -14,32 +14,57 @@
     <tr>
         <th>Descrição</th>
         <th>Valor</th>
-        <th></th>
+        <th>Operações</th>
     </tr>
     </thead>
     <tr th:each="p : ${produtos}">
-        <td th:text="${p.descricao}" align="left"> </td>
-        <td th:text="${'R$ '+ p.valor}" align="right"> </td>
-        <td><input type="number" name="" value="qtd" size="1" id=""/><button>&#128722;</button> </td>
+        <form th:action="@{/loja/save}" th:object="${item}" method="post">
+            <input type="hidden" th:name="produto.id" th:value="${p.id}">
+            <td th:text="${p.descricao}" th:align="left"> </td>
+            <td th:text="${'R$ '+ p.valor}" th:align="right"> </td>
+            <td>
+                <label>
+                    <input type="number" th:field="*{quantidade}" size="1"/>
+                </label>
+                <input type="submit" value="&#128722;"/>
+            </td>
+        </form>
     </tr>
 </table>
 
 <h2>Carrinho</h2>
-<table class="table" border="1">
+<table class="table" th:border="1">
     <thead>
     <tr>
-        <th>Descriçao</th>
+        <th>Descrição</th>
         <th>Valor Un</th>
-        <th>Valor Total Item</th>
-        <th colspan="2">Operaçoes</th>
+        <th>Quantidade</th>
+        <th>Total Item</th>
+        <th>Operações</th>
     </tr>
     </thead>
-    <tr th:each="i : ${items}">
+    <tr th:each="i,posicao : ${session.venda.items}">
         <td th:text="${i.produto.descricao}"> </td>
         <td th:text="${i.produto.valor}"> </td>
-        <td th:text="${i.produto.valor}"> </td>
-        <td> <a th:href="@{/produtos/edit/{id}(id=${p.id})}">&#128221;</a> </td>
-        <td> <a onclick="return window.confirm('Tem certeza que deseja excluir este produto?')"  th:href="@{/produtos/remove/{id}(id=${p.id})}">&#10060;</a> </td>
+        <td th:text="${i.quantidade}"> </td>
+        <td th:text="${i.total()}"> </td>
+        <td>
+            <a onclick="return window.confirm('Tem certeza que deseja excluir este produto?')"
+               th:href="@{/loja/removeitem/{index}(index=${posicao.index})}"><button>&#10060;</button>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" height="20"></td>
+    </tr>
+    <tr>
+        <td colspan="3"><b>Valor total:</b></td>
+        <td th:text="${session.venda.total()}"></td>
+        <td>
+            <a onclick="return window.confirm('Deseja confirmar esta venda?')"
+               th:href="@{/loja/finalizar}"><button>Finalizar</button>
+            </a>
+        </td>
     </tr>
 </table>
 

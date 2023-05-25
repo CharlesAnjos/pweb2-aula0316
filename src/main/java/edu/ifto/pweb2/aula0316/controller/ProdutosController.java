@@ -24,10 +24,6 @@ public class ProdutosController {
         produtoRepository = new ProdutoRepository();
     }
 
-    /**
-     * @param produto necessário devido utilizar no form.html o th:object que faz referência ao objeto esperado no controller.
-     * @return
-     */
     @GetMapping("/form")
     public String form(Produto produto){
         return "/produtos/form";
@@ -46,22 +42,12 @@ public class ProdutosController {
         return new ModelAndView("redirect:/produtos/list");
     }
 
-    /**
-     * @param id
-     * @return
-     * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-     */
     @GetMapping("/remove/{id}")
     public ModelAndView remove(@PathVariable("id") Long id){
         produtoRepository.remove(id);
         return new ModelAndView("redirect:/produtos/list");
     }
 
-    /**
-     * @param id
-     * @return
-     * @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-     */
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
         var produto = produtoRepository.produto(id);

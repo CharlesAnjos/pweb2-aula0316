@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>CONSULTA VENDA</h1>
+
+<table class="table" th:border="1">
+    <tr>
+        <td>Ientificador da venda</td>
+        <td th:text="${venda.id}"></td>
+    </tr>
+    <tr>
+        <td>Valor total da venda</td>
+        <td th:text="${venda.total()}"></td>
+    </tr>
+    <tr>
+        <td>Total de ítens da venda</td>
+        <td th:text="${venda.getItems().size()}"></td>
+    </tr>
+    <tr>
+        <td>Data da venda</td>
+        <td th:text="${venda.data.format(formatter)}"></td>
+    </tr>
+    <tr>
+        <td>Cliente</td>
+        <td th:text="${venda.pessoa.getNome()}"></td>
+    </tr>
+</table>
+<table class="table" th:border="1">
+    <thead>
+    <tr>
+        <th>Descrição</th>
+        <th>Preço</th>
+        <th>Quantidade</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tr th:each="i : ${venda.getItems()}">
+        <td th:text="${i.produto.descricao}"> </td>
+        <td th:text="${i.produto.valor}"> </td>
+        <td th:text="${i.quantidade}"> </td>
+        <td th:text="${i.total()}"> </td>
+    </tr>
+</table>
+
+</body>
+</html>

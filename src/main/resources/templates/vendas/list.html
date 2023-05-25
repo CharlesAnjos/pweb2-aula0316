@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1>VENDAS</h1>
+<a href="/">Voltar para Home</a>
+
+<table class="table" th:border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>$ Total</th>
+        <th># Ítens</th>
+        <th>Cliente</th>
+        <th>Operaçoes</th>
+    </tr>
+    </thead>
+    <tr th:each="v : ${vendas}">
+        <td th:text="${v.id}"></td>
+        <td th:text="${v.total()}"> </td>
+        <td th:text="${v.getItems().size()}"> </td>
+        <td th:text="${v.pessoa.getNome()}"> </td>
+        <td>
+            <a th:href="@{/vendas/venda/{id}(id=${v.id})}">
+                <button>&#128270;</button>
+            </a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
