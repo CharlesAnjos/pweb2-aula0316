@@ -1,6 +1,7 @@
 package edu.ifto.pweb2.aula0316.model.repository;
 
 import edu.ifto.pweb2.aula0316.model.entity.Item;
+import edu.ifto.pweb2.aula0316.model.entity.Venda;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -13,25 +14,25 @@ public class VendaRepository {
   @PersistenceContext
   private EntityManager em;
 
-  public void save(Item item) {
-    em.persist(item);
+  public void save(Venda venda) {
+    em.persist(venda);
   }
 
-  public Item item(Long id) {
-    return em.find(Item.class, id);
+  public Venda venda(Long id) {
+    return em.find(Venda.class, id);
   }
 
-  public List<Item> items() {
-    Query query = em.createQuery("from Item");
+  public List<Venda> vendas() {
+    Query query = em.createQuery("from Venda");
     return query.getResultList();
   }
 
   public void remove(Long id) {
-    Item p = em.find(Item.class, id);
-    em.remove(p);
+    Venda v = em.find(Venda.class, id);
+    em.remove(v);
   }
 
-  public void update(Item item) {
-    em.merge(item);
+  public void update(Venda venda) {
+    em.merge(venda);
   }
 }

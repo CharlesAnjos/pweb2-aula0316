@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Pessoas Juridicas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1>LISTA DE PESSOAS JURÍDICAS</h1>
+<a href="/pessoasjuridicas/form">Adicionar Nova Pessoa Juridica</a>
+
+<table class="table" border="1">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Nome</th>
+        <th>CNPJ</th>
+        <th colspan="2">Operações</th>
+    </tr>
+    </thead>
+    <tr th:each="p : ${pessoasJuridicas}">
+        <td th:text="${p.id}"> </td>
+        <td th:text="${p.nome}"> </td>
+        <td th:text="${p.cnpj}"> </td>
+        <td> <a th:href="@{/pessoasjuridicas/edit/{id}(id=${p.id})}">&#128221;</a> </td>
+        <td> <a onclick="return window.confirm('Tem certeza que deseja excluir este registro?')"  th:href="@{/pessoasjuridicas/remove/{id}(id=${p.id})}">&#10060;</a> </td>
+    </tr>
+</table>
+
+</body>
+</html>
