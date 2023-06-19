@@ -9,8 +9,7 @@ public class ConfiguracaoSpringMvc implements WebMvcConfigurer {
 
   @Override
   public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addRedirectViewController("/","/loja/list");
-    registry.addRedirectViewController("/home","/loja/list");
+    registry.addRedirectViewController("/","/loja/");
+    registry.addRedirectViewController("/home","/loja/");
   }
-
 }

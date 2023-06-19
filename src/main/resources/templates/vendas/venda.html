@@ -30,6 +30,10 @@
         <td>Cliente</td>
         <td th:text="${venda.pessoa.getNome()}"></td>
     </tr>
+    <tr>
+        <td>Endereço</td>
+        <td th:text="${venda.getEnderecoEntrega().toString()}"></td>
+    </tr>
 </table>
 <table class="table" th:border="1">
     <thead>

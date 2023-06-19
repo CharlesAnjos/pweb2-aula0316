@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
@@ -34,6 +31,10 @@ public class LojaController {
     @Autowired
     PessoaJuridicaRepository pessoaJuridicaRepository;
     @Autowired
+    CidadeRepository cidadeRepository;
+    @Autowired
+    EnderecoRepository enderecoRepository;
+    @Autowired
     Venda venda;
 
     public LojaController(){
@@ -42,10 +43,27 @@ public class LojaController {
         vendaRepository = new VendaRepository();
         pessoaFisicaRepository = new PessoaFisicaRepository();
         pessoaJuridicaRepository = new PessoaJuridicaRepository();
+        cidadeRepository = new CidadeRepository();
+        enderecoRepository = new EnderecoRepository();
     }
-    @GetMapping("/list")
-    public ModelAndView loja(Item item, ModelMap model) {
+
+    @GetMapping("/")
+    public ModelAndView loja(Endereco endereco, Item item, ModelMap model,@RequestParam(name="tipo",required=false) String tipo) {
         model.addAttribute("produtos", produtoRepository.produtos());
+        model.addAttribute("tipo", tipo);
+        if (venda.getPessoa() != null) {
+            model.addAttribute("pessoaSelecionada", venda.getPessoa().getNome());
+        } else {
+            model.addAttribute("pessoaSelecionada", "Nenhum cliente selecionado. Selecione um cliente antes de continuar");
+        }
+        if (venda.getEnderecoEntrega() != null) {
+            model.addAttribute("enderecoEntrega", venda.getEnderecoEntrega().toString());
+        } else {
+            model.addAttribute("enderecoEntrega", "Nenhum endereço de entrega disponível. Selecione um cliente ou entre com um endereço de entrega abaixo");
+        }
+        model.addAttribute("pessoasFisicas", pessoaFisicaRepository.pessoasFisicas());
+        model.addAttribute("pessoasJuridicas", pessoaJuridicaRepository.pessoasJuridicas());
+        model.addAttribute("cidades", cidadeRepository.cidades());
         return new ModelAndView("/loja/list", model);
     }
 
@@ -64,21 +82,42 @@ public class LojaController {
             itemsVenda.add(item);
             item.setVenda(venda);
         }
-        return new ModelAndView("redirect:/loja/list");
+        return new ModelAndView("redirect:/loja/");
+    }
+
+    @PostMapping("/saveendereco")
+    public ModelAndView saveEndereco(Endereco endereco) {
+        Cidade c = cidadeRepository.cidade(endereco.getCidade().getId());
+        endereco.setCidade(c);
+        Endereco e = enderecoRepository.saveAndReturn(endereco);
+        venda.setEnderecoEntrega(e);
+        return new ModelAndView("redirect:/loja/");
     }
 
     @GetMapping("/removeitem/{index}")
     public ModelAndView removeitem(@PathVariable("index") int index){
         venda.getItems().remove(index);
-        return new ModelAndView("redirect:/loja/list");
+        return new ModelAndView("redirect:/loja/");
+    }
+
+    @PostMapping("/setpf")
+    public ModelAndView setPessoaFisica(@ModelAttribute("pessoa") PessoaFisica pessoa){
+        pessoa = pessoaFisicaRepository.pessoaFisica(pessoa.getId());
+        venda.setPessoa(pessoa);
+        return new ModelAndView("redirect:/loja/");
+    }
+
+    @PostMapping("/setpj")
+    public ModelAndView setPessoaJuridica(@ModelAttribute("pessoa") PessoaJuridica pessoa){
+        pessoa = pessoaJuridicaRepository.pessoaJuridica(pessoa.getId());
+        venda.setPessoa(pessoa);
+        return new ModelAndView("redirect:/loja/");
     }
 
     @Transactional
     @GetMapping("/finalizar")
     public ModelAndView finalizar(HttpSession session) {
-        PessoaFisica pessoaFisica = pessoaFisicaRepository.pessoaFisica(1L);
         venda.setData(LocalDateTime.now());
-        venda.setPessoa(pessoaFisica);
         vendaRepository.save(venda);
         session.invalidate();
         return new ModelAndView("redirect:/vendas/list");

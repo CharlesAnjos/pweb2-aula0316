@@ -8,7 +8,36 @@
 <body>
 <h1>LOJA</h1>
 
-<h2>Escolha seu produto</h2>
+<h2>Escolha o Cliente</h2>
+<fieldset>
+    <form th:action="@{/loja/}" method="get">
+    <select name="tipo" id="tipo" onchange="submit()">
+        <option value="">Selecione</option>
+        <option value="pf" th:selected="${tipo=='pf'}">Pessoa Física</option>
+        <option value="pj" th:selected="${tipo=='pj'}">Pessoa Jurídica</option>
+    </select>
+    <p th:text="${pessoaSelecionada}"></p>
+    </form>
+
+    <form th:if="${tipo=='pf'}" th:action="@{/loja/setpf}" th:object="${pessoa}" method="post">
+        <select class="form-control" id="pessoaFisica" name="id">
+            <option value="0">Selecione PF</option>
+            <option th:each="pessoaFisica : ${pessoasFisicas}" th:value="${pessoaFisica.getId()}" th:text="${pessoaFisica.getNome()}"></option>
+        </select>
+        <input type="submit" value="&#128722;"/>
+    </form>
+
+    <form th:if="${tipo=='pj'}" th:action="@{/loja/setpj}" th:object="${pessoa}" method="post">
+        <select class="form-control" id="pessoaJuridica" name="id">
+            <option value="0">Selecione PJ</option>
+            <option th:each="pessoaJuridica : ${pessoasJuridicas}" th:value="${pessoaJuridica.getId()}" th:text="${pessoaJuridica.getNome()}"></option>
+        </select>
+        <input type="submit" value="&#128722;"/>
+    </form>
+</fieldset>
+
+
+<h2>Escolha os Produto</h2>
 <table class="table" border="1">
     <thead>
     <tr>
@@ -67,6 +96,34 @@
         </td>
     </tr>
 </table>
+
+<h2>Endereço de entrega</h2>
+<p th:text="${enderecoEntrega}"> </p>
+<h3>Caso desejado, informar um endereço de entrega diferente.</h3>
+<form th:action="@{/loja/saveendereco}" th:object="${endereco}" method="post">
+    <p>
+        <label for="logradouro">Logradouro:</label>
+        <input id="logradouro" th:field="*{logradouro}"/>
+    </p>
+        <p>
+        <label for="complemento">Complemento:</label>
+        <input id="complemento" th:field="*{complemento}"/>
+    </p>
+        <p>
+        <label for="bairro">Bairro:</label>
+        <input id="bairro" th:field="*{bairro}"/>
+    </p>
+    <p>
+        <div>Cidade:</div>
+            <select class="form-control" th:field="*{cidade.id}">
+                <option value="0">Selecione Cidade</option>
+                <option th:each="cidade : ${cidades}" th:value="${cidade.getId()}" th:text="${cidade.getNome()}"></option>
+            </select>
+    </p>
+    <p>
+    <input type="submit" value="Salvar"/>
+    </p>
+</form>
 
 </body>
 </html>
